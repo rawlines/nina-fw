@@ -97,8 +97,11 @@ public:
 
   unsigned long getTime();
 
-  void lowPowerMode();
+  void lowPowerMinMode();
+  void lowPowerMaxMode();
   void noLowPowerMode();
+
+  void deepSleep();
 
   void onReceive(void(*)(void));
   void onDisconnect(void(*)(void));
