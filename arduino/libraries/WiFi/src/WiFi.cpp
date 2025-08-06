@@ -624,14 +624,27 @@ unsigned long WiFiClass::getTime()
   return now;
 }
 
-void WiFiClass::lowPowerMode()
+void WiFiClass::lowPowerMinMode()
 {
-  esp_wifi_set_ps(WIFI_PS_MODEM);
+  esp_wifi_set_ps(WIFI_PS_MIN_MODEM);
+}
+
+void WiFiClass::lowPowerMaxMode()
+{
+  esp_wifi_set_ps(WIFI_PS_MAX_MODEM);
 }
 
 void WiFiClass::noLowPowerMode()
 {
   esp_wifi_set_ps(WIFI_PS_NONE);
+}
+
+void WiFiClass::deepSleep()
+{
+  esp_bt_controller_disable();
+  esp_wifi_stop();
+  esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
+  esp_deep_sleep_start(); // Indefinetly deep sleep
 }
 
 void WiFiClass::onReceive(void(*callback)(void))

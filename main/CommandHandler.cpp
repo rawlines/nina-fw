@@ -165,9 +165,12 @@ int setHostname(const uint8_t command[], uint8_t response[])
 
 int setPowerMode(const uint8_t command[], uint8_t response[])
 {
-  if (command[4]) {
-    // low power
-    WiFi.lowPowerMode();
+  if (command[4] == 1) {
+    // min low power
+    WiFi.lowPowerMinMode();
+  } else if (command[4] == 2) {
+    // max low power
+    WiFi.lowPowerMaxMode();
   } else {
     // no low power
     WiFi.noLowPowerMode();
@@ -254,6 +257,17 @@ int getTemperature(const uint8_t command[], uint8_t response[])
   memcpy(&response[4], &temperature, sizeof(temperature));
 
   return 9;
+}
+
+int deepSleep(const uint8_t command[], uint8_t response[])
+{
+  WiFi.deepSleep();
+
+  response[2] = 1; // number of parameters
+  response[3] = 1; // parameter 1 length
+  response[4] = 1;
+
+  return 6;
 }
 
 int getDNSconfig(const uint8_t command[], uint8_t response[])
@@ -2077,7 +2091,7 @@ const CommandHandlerType commandHandlers[] = {
   NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 
   // 0x10 -> 0x1f
-  setNet, setPassPhrase, setKey, NULL, setIPconfig, setDNSconfig, setHostname, setPowerMode, setApNet, setApPassPhrase, setDebug, getTemperature, NULL, NULL, getDNSconfig, getReasonCode,
+  setNet, setPassPhrase, setKey, NULL, setIPconfig, setDNSconfig, setHostname, setPowerMode, setApNet, setApPassPhrase, setDebug, getTemperature, deepSleep, NULL, getDNSconfig, getReasonCode,
 
   // 0x20 -> 0x2f
   getConnStatus, getIPaddr, getMACaddr, getCurrSSID, getCurrBSSID, getCurrRSSI, getCurrEnct, scanNetworks, startServerTcp, getStateTcp, dataSentTcp, availDataTcp, getDataTcp, startClientTcp, stopClientTcp, getClientStateTcp,
